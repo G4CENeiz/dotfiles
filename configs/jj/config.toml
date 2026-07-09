@@ -1,0 +1,4 @@
+# Jujutsu (jj) Config
+[ui]
+default-command = "log"
+conflict-marker-style = "git"

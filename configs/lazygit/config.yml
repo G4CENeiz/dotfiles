@@ -1,0 +1,9 @@
+# Lazygit Config
+gui:
+  theme:
+    lightTheme: true
+  showIcons: true
+  nerdFontsVersion: "3"
+git:
+  log:
+    order: default

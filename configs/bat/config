@@ -1,0 +1,4 @@
+# Bat Config
+theme = "Catppuccin Latte"
+style = "numbers"
+italic-text = "always"
