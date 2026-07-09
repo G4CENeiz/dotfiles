@@ -5,27 +5,23 @@ Distro-agnostic Linux dotfiles. Works on Ubuntu, Fedora, Arch, anything.
 ## Quick Start
 
 ```bash
-git clone https://github.com/YOUR_USER/dotfiles.git ~/remaster/dotfiles
+git clone https://github.com/G4CENeiz/dotfiles.git ~/remaster/dotfiles
 cd ~/remaster/dotfiles
 
-# 1. Install Nix
-sh <(curl -L https://nixos.org/nix/install) --daemon
+# 1. Install Nix (Determinate Systems - better than official installer)
+curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 
-# 2. Enable flakes
-mkdir -p ~/.config/nix
-echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
-
-# 3. Install packages
+# 2. Install packages
 nix profile install .#
 
-# 4. Link configs
+# 3. Link configs
 chmod +x link.sh
 ./link.sh
 
-# 5. Manual installs (see MANUAL-INSTALLS.md)
+# 4. Manual installs (see MANUAL-INSTALLS.md)
 # Docker, VS Code, nvm, bun, pnpm, uv, sdkman, herd-lite, hunk
 
-# 6. Log out/in, then: nu
+# 5. Log out/in, then: nu
 ```
 
 ## What's Installed (via Nix)
@@ -61,18 +57,24 @@ See [MANUAL-INSTALLS.md](MANUAL-INSTALLS.md):
 ├── MANUAL-INSTALLS.md     # Manual installs
 ├── TODO.md                # Setup checklist
 └── configs/               # Config files (symlinked)
-    ├── nushell/
-    ├── nvim/
-    ├── git/
-    ├── ghostty/
-    ├── starship/
-    ├── yazi/
-    ├── lazygit/
-    ├── lazydocker/
-    ├── btop/
+    ├── agents/
+    ├── bash/
     ├── bat/
+    ├── btop/
     ├── fzf/
+    ├── ghostty/
+    ├── git/
     ├── herdr/
     ├── jj/
-    └── jjui/
+    ├── jjui/
+    ├── lazydocker/
+    ├── lazygit/
+    ├── nushell/
+    ├── nvim/
+    ├── omp/
+    ├── opencode/
+    ├── pi/
+    ├── starship/
+    ├── yazi/
+    └── zsh/
 ```

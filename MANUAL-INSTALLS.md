@@ -4,6 +4,18 @@ These tools are NOT managed by Nix. Install them yourself.
 
 ---
 
+## Nix
+
+Why: Use Determinate Systems installer (better than official).
+
+```bash
+curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+```
+
+This installs Nix with flakes enabled and proper daemon setup.
+
+---
+
 ## Docker
 
 Why: Nix-managed Docker has systemd integration issues.
