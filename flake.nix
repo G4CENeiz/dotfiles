@@ -37,7 +37,7 @@
           pkgs.zip
           pkgs.unzip
           pkgs.gnutar
-          pkgs.git-delta     # better git diff
+          pkgs.delta     # better git diff
           pkgs.direnv        # auto env loading
           pkgs.carapace      # shell completions
           pkgs.starship      # prompt
