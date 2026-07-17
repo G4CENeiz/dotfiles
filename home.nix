@@ -1,15 +1,14 @@
 # home.nix — Home Manager configuration
 # Packages from nixpkgs + symlinked config files
-{ pkgs, config, dotfiles, ... }:
+{ pkgs, config, dotfiles, username, homeDirectory, ... }:
 
 let
   inherit (config.lib.file) mkOutOfStoreSymlink;
 in
 {
   home.stateVersion = "24.11";
-  # Change these to your username/home when cloning
-  home.username = "gace";
-  home.homeDirectory = "/home/gace";
+  home.username = username;
+  home.homeDirectory = homeDirectory;
 
   # ── Nix packages (installed from nixpkgs) ──
   home.packages = with pkgs; [
