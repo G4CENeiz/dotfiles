@@ -42,10 +42,17 @@ curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 # 3. Clone and run
 git clone https://github.com/G4CENeiz/dotfiles ~/dotfiles
 cd ~/dotfiles
+
+# 4. Set your username (edit home.nix lines 11-12)
+#    Change "gace" to your Linux username
+sed -i 's/home.username = "gace"/home.username = "YOUR_USERNAME"/' home.nix
+sed -i 's|home.homeDirectory = "/home/gace"|home.homeDirectory = "/home/YOUR_USERNAME"|' home.nix
+
+# 5. Apply
 nix run .
 ```
 
-That's it. One command sets up everything.
+**Important:** You MUST change the username in `home.nix` before running `nix run .`. Nix flakes don't have access to environment variables during evaluation, so the username can't be auto-detected.
 
 ## Updating
 
