@@ -128,9 +128,8 @@ let
     runtimeInputs = with pkgs; [ curl bash gawk ];
     text = ''
       set -euo pipefail
-      if command -v herd &>/dev/null; then
+      if [ -x "$HOME/.config/herd-lite/bin/php" ]; then
         echo "herd-lite already installed"
-        exit 0
       fi
       HERD_DIR="$HOME/.config/herd-lite/bin"
       mkdir -p "$HERD_DIR"
@@ -138,9 +137,8 @@ let
       export PATH="$HERD_DIR:$PATH"
       echo "Installing herd-lite..."
       curl -fsSL https://php.new/install/linux | bash
-      if [ -x "$HERD_DIR/herd" ]; then
+      if [ -x "$HERD_DIR/php" ]; then
         echo "✓ herd-lite installed"
-      else
         echo "✗ herd-lite installation failed"
         exit 1
       fi
