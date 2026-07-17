@@ -125,3 +125,5 @@ export PATH="$HOME/.nix-profile/bin:$PATH"
 # SDKMAN
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+# herd-lite
+export PATH="$HOME/.config/herd-lite/bin:$PATH"

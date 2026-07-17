@@ -125,7 +125,7 @@ let
 
   installHerdLite = pkgs.writeShellApplication {
     name = "install-herd-lite";
-    runtimeInputs = with pkgs; [ curl bash ];
+    runtimeInputs = with pkgs; [ curl bash gawk ];
     text = ''
       set -euo pipefail
       if command -v herd &>/dev/null; then
@@ -133,7 +133,7 @@ let
         exit 0
       fi
       echo "Installing herd-lite..."
-      curl -fsSL https://php.new/install/linux | bash
+      curl -fsSL https://php.new/install/linux | bash || true
       if command -v herd &>/dev/null; then
         echo "✓ herd-lite installed"
       else
