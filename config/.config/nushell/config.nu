@@ -1,7 +1,7 @@
 # Nushell config
 
 # --- Prompt ---
-$env.PROMPT_COMMAND = { || $"(ansi green)($env.USER)@(hostname)(ansi reset):(ansi blue)(pwd)(ansi reset) $" }
+$env.PROMPT_COMMAND = { || $"(ansi green)($env.USER)@($env.HOSTNAME)(ansi reset):(ansi blue)(pwd)(ansi reset) $" }
 $env.PROMPT_COMMAND_RIGHT = { || "" }
 $env.PROMPT_INDICATOR = { || $"(ansi green)>(ansi reset) " }
 $env.PROMPT_MULTILINE_INDICATOR = { || $"(ansi green)::>(ansi reset) " }
