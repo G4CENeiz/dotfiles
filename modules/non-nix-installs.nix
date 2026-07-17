@@ -88,13 +88,15 @@ let
     runtimeInputs = with pkgs; [ curl bash ];
     text = ''
       set -euo pipefail
-      if [ -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
-        echo "SDKMAN already installed"
-        exit 0
+      SDKMAN_DIR="$HOME/.sdkman"
+      # Uninstall if exists
+      if [ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
+        echo "SDKMAN found — removing for clean reinstall..."
+        rm -rf "$SDKMAN_DIR"
       fi
       echo "Installing SDKMAN!..."
       curl -s "https://get.sdkman.io" | bash -s -- -s
-      if [ -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
+      if [ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
         echo "✓ SDKMAN installed"
       else
         echo "✗ SDKMAN installation failed"
