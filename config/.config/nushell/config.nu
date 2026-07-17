@@ -1,3 +1,6 @@
+# Fix omp shebang - bun not found via env
+alias omp = bun ~/.bun/bin/omp
+
 # Nushell config
 
 # --- Prompt ---
