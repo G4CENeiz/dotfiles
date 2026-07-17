@@ -1,47 +1,35 @@
+# Nushell environment config
+
 # Fix locale warnings
 $env.LC_ALL = "C.utf8"
 $env.LANG = "C.utf8"
 
-# Nushell environment config
-
 # --- Paths ---
 $env.BUN_INSTALL = ($env.HOME | path join ".bun")
+$env.PNPM_HOME = ($env.HOME | path join ".local/share/pnpm")
+$env.SDKMAN_DIR = ($env.HOME | path join ".sdkman")
+
 $env.PATH = (
     $env.PATH
-    | where { $in != "" }
-    | prepend ($env.BUN_INSTALL | path join "bin")
-    | prepend ($env.HOME | path join ".local" | path join "bin")
-    | prepend ($env.HOME | path join "bin")
-    | prepend ($env.HOME | path join ".nix-profile/bin")
-    | prepend ($env.HOME | path join ".local/share/pnpm/bin")
+    | split row (char esep)
+    | prepend ($env.SDKMAN_DIR | path join "bin")
     | prepend ($env.HOME | path join ".config/herd-lite/bin")
+    | prepend $env.PNPM_HOME
+    | prepend ($env.HOME | path join ".nix-profile/bin")
+    | prepend ($env.HOME | path join "bin")
+    | prepend ($env.HOME | path join ".local/bin")
+    | prepend ($env.BUN_INSTALL | path join "bin")
     | uniq
 )
+
 # --- Vite+ (https://viteplus.dev) ---
 if ($env.HOME | path join ".vite-plus/env.nu" | path exists) { source ~/.vite-plus/env.nu }
 
 # --- History ---
 $env.HISTORY_SIZE = 500_000
 
-# --- Editor ---
-# $env.EDITOR = "vim"
-
 # SDKMAN (bash wrapper for nushell)
-$env.SDKMAN_DIR = ($env.HOME | path join ".sdkman")
 def sdk [...args: string] {
     let sdkdir = $env.SDKMAN_DIR
     bash -c $"source ($sdkdir)/bin/sdkman-init.sh; sdk ($args | str join ' ')"
 }
-
-# pnpm
-$env.PNPM_HOME = ($env.HOME | path join ".local/share/pnpm")
-$env.PATH = ($env.PATH | split row (char esep) | prepend ($env.PNPM_HOME | path join "bin") )
-# SDKMAN (bash wrapper for nushell)
-$env.SDKMAN_DIR = ($env.HOME | path join ".sdkman")
-def sdk [...args: string] {
-    let sdkdir = $env.SDKMAN_DIR
-    bash -c $"(export LC_ALL=C.utf8; source ($sdkdir)/bin/sdkman-init.sh && sdk ($args | str join ' '))"
-}
-
-# herd-lite
-$env.PATH = ($env.PATH | prepend ($env.HOME | path join ".config/herd-lite/bin"))
