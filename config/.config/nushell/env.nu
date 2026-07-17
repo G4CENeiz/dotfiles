@@ -24,10 +24,12 @@ if (($env.HOME | path join ".nix-profile/bin") | path exists) {
 # pnpm
 $env.PNPM_HOME = ($env.HOME | path join ".local/share/pnpm")
 $env.PATH = ($env.PATH | split row (char esep) | prepend ($env.PNPM_HOME | path join "bin") )
-# SDKMAN
+# SDKMAN (bash wrapper for nushell)
 $env.SDKMAN_DIR = ($env.HOME | path join ".sdkman")
-if ($env.SDKMAN_DIR | path join "bin/sdkman-init.nu" | path exists) {
-    source ($env.SDKMAN_DIR | path join "bin/sdkman-init.nu")
+if ($env.SDKMAN_DIR | path join "bin/sdkman-init.sh" | path exists) {
+    $env.PATH = ($env.PATH | prepend ($env.SDKMAN_DIR | path join "bin"))
+    # sdk is a bash function — wrap it for nushell
+    def --env sdk [...args: string] { bash -c "source $env.SDKMAN_DIR/bin/sdkman-init.sh && sdk $args" }
 }
 
 # herd-lite
