@@ -1,34 +1,16 @@
 { pkgs, bunGlobals, vpGlobals }:
 
 let
-  installBun = pkgs.writeShellApplication {
-    name = "install-bun";
-    runtimeInputs = with pkgs; [ curl bash ];
-    text = ''
-      set -euo pipefail
-      BUN_HOME="''${BUN_INSTALL:-$HOME/.bun}"
-      BUN_BIN="$BUN_HOME/bin/bun"
-      if [ -x "$BUN_BIN" ]; then
-        echo "bun already installed: $(''$BUN_BIN --version)"
-        exit 0
-      fi
-      echo "Installing bun..."
-      curl -fsSL https://bun.sh/install | bash
-      if [ -x "$BUN_BIN" ]; then
-        echo "✓ bun $(''$BUN_BIN --version) installed"
-      else
-        echo "✗ bun installation failed"
-        exit 1
-      fi
-    '';
-  };
 
   installBunGlobals = pkgs.writeShellApplication {
     name = "install-bun-globals";
     runtimeInputs = [ pkgs.bash ];
     text = ''
-      set -euo pipefail
       BUN="''${BUN_INSTALL:-$HOME/.bun}/bin/bun"
+      # Also check vp global bin
+      if [ ! -x "$BUN" ] && [ -x "$HOME/.vite-plus/bin/bun" ]; then
+        BUN="$HOME/.vite-plus/bin/bun"
+      fi
       if [ ! -x "$BUN" ]; then
         echo "✗ bun not found — skipping globals"
         exit 0
@@ -163,10 +145,9 @@ let
 
 
   setupCommands = pkgs.lib.concatStringsSep "\n" [
-    "install-bun"
-    "install-bun-globals"
     "install-vp"
     "install-vp-globals"
+    "install-bun-globals"
     "install-uv"
     "install-sdkman"
     "install-herdr"
@@ -174,7 +155,6 @@ let
   ];
 
   runtimeDeps = [
-    installBun
     installBunGlobals
     installVp
     installVpGlobals
@@ -188,7 +168,7 @@ in {
   inherit runtimeDeps setupCommands;
   packages = {
     inherit
-      installBun installBunGlobals
+      installBunGlobals
       installVp installVpGlobals
       installUv installSdkman
       installHerdr installHerdLite;
