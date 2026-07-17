@@ -89,10 +89,24 @@ let
     text = ''
       set -euo pipefail
       SDKMAN_DIR="$HOME/.sdkman"
-      # Uninstall if exists
-      if [ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
-        echo "SDKMAN found — removing for clean reinstall..."
+      # Verify installation is complete, not just directory exists
+      if [ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ] && [ -d "$SDKMAN_DIR/candidates" ]; then
+        echo "SDKMAN already installed and valid"
+        exit 0
+      fi
+      # Remove incomplete/broken installation
+      if [ -d "$SDKMAN_DIR" ]; then
+        echo "SDKMAN found but incomplete — removing..."
         rm -rf "$SDKMAN_DIR"
+      fi
+      # SDKMAN installer fails if .bashrc is a read-only symlink
+      # Create a temporary writable .bashrc for the installer
+      if [ -L "$HOME/.bashrc" ]; then
+        TMP_BASHRC="$(mktemp)"
+        cp "$HOME/.bashrc" "$TMP_BASHRC" 2>/dev/null || echo "" > "$TMP_BASHRC"
+        rm "$HOME/.bashrc"
+        cp "$TMP_BASHRC" "$HOME/.bashrc"
+        rm "$TMP_BASHRC"
       fi
       echo "Installing SDKMAN!..."
       curl -s "https://get.sdkman.io" | bash -s -- -s
@@ -104,7 +118,6 @@ let
       fi
     '';
   };
-
   installHerdr = pkgs.writeShellApplication {
     name = "install-herdr";
     runtimeInputs = with pkgs; [ curl bash gawk ];
