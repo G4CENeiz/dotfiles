@@ -22,6 +22,8 @@ if (($env.HOME | path join ".nix-profile/bin") | path exists) {
 }
 
 # pnpm
-$env.PNPM_HOME = "/home/gace/.local/share/pnpm"
+$env.PNPM_HOME = ($env.HOME | path join ".local/share/pnpm")
 $env.PATH = ($env.PATH | split row (char esep) | prepend ($env.PNPM_HOME | path join "bin") )
-# pnpm end
+
+# herd-lite
+$env.PATH = ($env.PATH | prepend ($env.HOME | path join ".config/herd-lite/bin"))

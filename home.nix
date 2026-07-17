@@ -94,8 +94,29 @@ in
       l = "ls -CF";
     };
     initExtra = ''
+      # bun
+      export BUN_INSTALL="$HOME/.bun"
+      export PATH="$BUN_INSTALL/bin:$PATH"
+
+      # Vite+ (https://viteplus.dev)
+      [ -f "$HOME/.vite-plus/env" ] && source "$HOME/.vite-plus/env"
+
+      # Local bin
+      export PATH="$HOME/.local/bin:$PATH"
+
+      # Nix profile
+      export PATH="$HOME/.nix-profile/bin:$PATH"
+
+      # SDKMAN
+      export SDKMAN_DIR="$HOME/.sdkman"
+      [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+      # herd-lite
+      export PATH="$HOME/.config/herd-lite/bin:$PATH"
+
       # zoxide
       eval "$(zoxide init bash)"
+
       # carapace
       eval "$(carapace bash)"
     '';
