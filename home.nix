@@ -94,6 +94,9 @@ in
       l = "ls -CF";
     };
     initExtra = ''
+      # Fix locale warnings
+      export LC_ALL=C.utf8
+
       # bun
       export BUN_INSTALL="$HOME/.bun"
       export PATH="$BUN_INSTALL/bin:$PATH"

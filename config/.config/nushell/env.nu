@@ -26,10 +26,8 @@ $env.PNPM_HOME = ($env.HOME | path join ".local/share/pnpm")
 $env.PATH = ($env.PATH | split row (char esep) | prepend ($env.PNPM_HOME | path join "bin") )
 # SDKMAN (bash wrapper for nushell)
 $env.SDKMAN_DIR = ($env.HOME | path join ".sdkman")
-if ($env.SDKMAN_DIR | path join "bin/sdkman-init.sh" | path exists) {
-    def --env sdk [...args: string] {
-        bash -c $"source ($env.SDKMAN_DIR)/bin/sdkman-init.sh && sdk ($args | str join ' ')"
-    }
+def sdk [...args: string] {
+    bash -c $"source $env.SDKMAN_DIR/bin/sdkman-init.sh && sdk ($args | str join ' ')"
 }
 
 # herd-lite
