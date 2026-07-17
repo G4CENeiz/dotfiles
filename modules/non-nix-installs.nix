@@ -163,15 +163,20 @@ let
 
   installPnpm = pkgs.writeShellApplication {
     name = "install-pnpm";
-    runtimeInputs = with pkgs; [ curl bash gcc.cc.lib ];
+    runtimeInputs = with pkgs; [ bash ];
     text = ''
       set -euo pipefail
       if command -v pnpm &>/dev/null; then
         echo "pnpm already installed: $(pnpm --version)"
         exit 0
       fi
-      echo "Installing pnpm..."
-      curl -fsSL https://get.pnpm.io/install.sh | bash
+      NPM="$HOME/.bun/bin/npm"
+      if [ ! -x "$NPM" ]; then
+        echo "✗ npm not found — install bun first"
+        exit 1
+      fi
+      echo "Installing pnpm via npm..."
+      "$NPM" install -g pnpm
       if command -v pnpm &>/dev/null; then
         echo "✓ pnpm $(pnpm --version) installed"
       else
