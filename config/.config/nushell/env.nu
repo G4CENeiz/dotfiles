@@ -1,3 +1,7 @@
+# Fix locale warnings
+$env.LC_ALL = "C.utf8"
+$env.LANG = "C.utf8"
+
 # Nushell environment config
 
 # --- Paths ---
