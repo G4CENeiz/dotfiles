@@ -105,7 +105,7 @@ let
 
   installHerdr = pkgs.writeShellApplication {
     name = "install-herdr";
-    runtimeInputs = with pkgs; [ curl bash ];
+    runtimeInputs = with pkgs; [ curl bash gawk ];
     text = ''
       set -euo pipefail
       if command -v herdr &>/dev/null; then
