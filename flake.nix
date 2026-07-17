@@ -63,12 +63,16 @@
             # ── Step 1: Home Manager ──
             echo "── [1/2] Home Manager ──"
             cd "$REPO_DIR"
+            # Remove existing config files that block Home Manager
+            for f in .bashrc .profile .bash_logout .gitconfig; do
+              [ -L "$HOME/$f" ] && rm "$HOME/$f"
+            done
             home-manager switch --impure --flake .#default
             echo ""
 
             # ── Step 2: Non-nix tools ──
             echo "── [2/2] Non-nix tools ──"
-            home-manager switch --impure --flake .#default -b backup
+            ${nonNix.setupCommands}
             ${docker.installCommand}
             echo ""
 
