@@ -17,6 +17,7 @@ in
     curl
     wget
     gnupg
+    gh
     unzip
     gnutar
 
@@ -116,6 +117,12 @@ in
         line-numbers = true;
         side-by-side = false;
       };
+      # gh CLI integration
+      gh = {
+        aliases = {
+          pr = "pull-request";
+        };
+      };
     };
     aliases = {
       s = "status";
@@ -128,6 +135,11 @@ in
       undo = "reset HEAD~1 --mixed";
       amend = "commit --amend --no-edit";
       stash-all = "stash push --include-untracked";
+      # gh shortcuts
+      prs = "gh pr list";
+      prc = "gh pr create";
+      prv = "gh pr view";
+      issues = "gh issue list";
     };
   };
 
