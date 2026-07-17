@@ -20,9 +20,6 @@ $env.PATH = (
     | uniq
 )
 
-# Hostname (after PATH so hostname command is available)
-$env.HOSTNAME = (run-external hostname)
-
 # --- Vite+ (https://viteplus.dev) ---
 if ($env.HOME | path join ".vite-plus/env.nu" | path exists) { source ~/.vite-plus/env.nu }
 
