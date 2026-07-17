@@ -28,7 +28,7 @@ $env.PATH = ($env.PATH | split row (char esep) | prepend ($env.PNPM_HOME | path 
 $env.SDKMAN_DIR = ($env.HOME | path join ".sdkman")
 def sdk [...args: string] {
     let sdkdir = $env.SDKMAN_DIR
-    bash -c $"source ($sdkdir)/bin/sdkman-init.sh && sdk ($args | str join ' ')"
+    bash -c $"(export LC_ALL=C.utf8; source ($sdkdir)/bin/sdkman-init.sh && sdk ($args | str join ' '))"
 }
 
 # herd-lite
