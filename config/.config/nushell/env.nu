@@ -19,6 +19,8 @@ $env.PATH = (
     | prepend ($env.BUN_INSTALL | path join "bin")
     | uniq
 )
+# Hostname
+$env.HOSTNAME = (open /etc/hostname | str trim)
 
 # --- Vite+ (https://viteplus.dev) ---
 if ($env.HOME | path join ".vite-plus/env.nu" | path exists) { source ~/.vite-plus/env.nu }
