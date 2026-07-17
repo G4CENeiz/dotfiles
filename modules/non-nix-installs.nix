@@ -139,6 +139,7 @@ let
       curl -fsSL https://php.new/install/linux | bash
       if [ -x "$HERD_DIR/php" ]; then
         echo "✓ herd-lite installed"
+      else
         echo "✗ herd-lite installation failed"
         exit 1
       fi
