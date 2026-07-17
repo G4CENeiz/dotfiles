@@ -5,10 +5,6 @@ $env.LC_ALL = "C.utf8"
 $env.LANG = "C.utf8"
 
 # --- Paths ---
-# Hostname (nushell doesn't have this built-in)
-$env.HOSTNAME = (run-external hostname)
-$env.BUN_INSTALL = ($env.HOME | path join ".bun")
-$env.PNPM_HOME = ($env.HOME | path join ".local/share/pnpm")
 $env.SDKMAN_DIR = ($env.HOME | path join ".sdkman")
 
 $env.PATH = (
@@ -23,6 +19,9 @@ $env.PATH = (
     | prepend ($env.BUN_INSTALL | path join "bin")
     | uniq
 )
+
+# Hostname (after PATH so hostname command is available)
+$env.HOSTNAME = (run-external hostname)
 
 # --- Vite+ (https://viteplus.dev) ---
 if ($env.HOME | path join ".vite-plus/env.nu" | path exists) { source ~/.vite-plus/env.nu }
