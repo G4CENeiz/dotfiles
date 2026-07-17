@@ -60,19 +60,14 @@
             echo "╚══════════════════════════════════╝"
             echo ""
 
-            # ── Step 0: Pull latest ──
-            echo "── [0/3] Pulling latest changes ──"
-            cd "$REPO_DIR"
-            git pull --rebase origin main 2>/dev/null || true
-            echo ""
-
             # ── Step 1: Home Manager ──
-            echo "── [1/3] Home Manager ──"
+            echo "── [1/2] Home Manager ──"
+            cd "$REPO_DIR"
             home-manager switch --impure --flake .#default
             echo ""
 
             # ── Step 2: Non-nix tools ──
-            echo "── [2/3] Non-nix tools ──"
+            echo "── [2/2] Non-nix tools ──"
             ${nonNix.setupCommands}
             ${docker.installCommand}
             echo ""
