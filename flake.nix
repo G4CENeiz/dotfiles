@@ -31,7 +31,7 @@
     in
     {
       # ── Home Manager config (used by `home-manager switch`) ──
-      homeConfigurations."gace" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."${builtins.getEnv "USER"}" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [ ./home.nix ];
         extraSpecialArgs = { dotfiles = ./.; };
@@ -52,14 +52,14 @@
             REPO_DIR="$(pwd)"
 
             echo "╔══════════════════════════════════╗"
-            echo "║   Gace's Dotfiles Setup          ║"
+            echo "║   Dotfiles Setup                 ║"
             echo "╚══════════════════════════════════╝"
             echo ""
 
             # ── Step 1: Home Manager ──
             echo "── [1/2] Home Manager ──"
             cd "$REPO_DIR"
-            home-manager switch --flake .#gace
+            home-manager switch --flake ".#$(whoami)"
             echo ""
 
             # ── Step 2: Non-nix tools ──

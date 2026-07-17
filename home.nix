@@ -7,8 +7,8 @@ let
 in
 {
   home.stateVersion = "24.11";
-  home.username = "gace";
-  home.homeDirectory = "/home/gace";
+  home.username = builtins.getEnv "USER";
+  home.homeDirectory = builtins.getEnv "HOME";
 
   # ── Nix packages (installed from nixpkgs) ──
   home.packages = with pkgs; [

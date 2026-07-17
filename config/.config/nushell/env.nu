@@ -17,11 +17,10 @@ $env.HISTORY_SIZE = 500_000
 # --- Editor ---
 # $env.EDITOR = "vim"
 # --- Nix profile ---
-if ("/home/gace/.nix-profile/bin" | path exists) {
-    $env.PATH = ($env.PATH | prepend "/home/gace/.nix-profile/bin")
+if (($env.HOME | path join ".nix-profile/bin") | path exists) {
+    $env.PATH = ($env.PATH | prepend ($env.HOME | path join ".nix-profile/bin"))
 }
 
 # pnpm
-$env.PNPM_HOME = "/home/gace/.local/share/pnpm"
+$env.PNPM_HOME = ($env.HOME | path join ".local/share/pnpm")
 $env.PATH = ($env.PATH | split row (char esep) | prepend ($env.PNPM_HOME | path join "bin") )
-# pnpm end

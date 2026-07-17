@@ -119,6 +119,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Vite+ bin (https://viteplus.dev)
 . "$HOME/.vite-plus/env"
 # local bin
-export PATH="/home/gace/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 # Nix profile
-export PATH="/home/gace/.nix-profile/bin:$PATH"
+export PATH="$HOME/.nix-profile/bin:$PATH"
