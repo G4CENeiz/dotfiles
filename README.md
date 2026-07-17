@@ -34,7 +34,6 @@ VS Code, Neovim, Ghostty, code editors
 
 ```bash
 # 1. Install Nix via Determinate Systems (one-time)
-#    Flakes enabled by default, no manual config needed
 curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 
 # 2. Restart your shell (or run: source ~/.bashrc)
@@ -43,16 +42,14 @@ curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 git clone https://github.com/G4CENeiz/dotfiles ~/dotfiles
 cd ~/dotfiles
 
-# 4. Set your username (edit home.nix lines 11-12)
-#    Change "gace" to your Linux username
-sed -i 's/home.username = "gace"/home.username = "YOUR_USERNAME"/' home.nix
-sed -i 's|home.homeDirectory = "/home/gace"|home.homeDirectory = "/home/YOUR_USERNAME"|' home.nix
+# 4. Set your username in config.nix
+nano config.nix
 
 # 5. Apply
 nix run .
 ```
 
-**Important:** You MUST change the username in `home.nix` before running `nix run .`. Nix flakes don't have access to environment variables during evaluation, so the username can't be auto-detected.
+**Important:** Edit `config.nix` with your username before running `nix run .`. This is the only file you need to change.
 
 ## Updating
 

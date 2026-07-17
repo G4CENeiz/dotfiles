@@ -19,6 +19,9 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
 
+      # Import user config (edit config.nix with your username)
+      userConfig = import ./config.nix;
+
       # Import package lists (pure lists, no logic)
       bunGlobals = import ./modules/packages/bun-globals.nix;
       vpGlobals = import ./modules/packages/vp-globals.nix;
@@ -36,8 +39,8 @@
         modules = [ ./home.nix ];
         extraSpecialArgs = {
           dotfiles = ./.;
-          username = builtins.getEnv "USER";
-          homeDirectory = builtins.getEnv "HOME";
+          username = userConfig.username;
+          homeDirectory = userConfig.homeDirectory;
         };
       };
 
