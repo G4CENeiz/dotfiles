@@ -2,4 +2,5 @@
 # Install: nix run .#install-vp-globals (or as part of `nix run .`)
 [
   "hunkdiff"
+  "pnpm"
 ]

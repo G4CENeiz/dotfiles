@@ -161,30 +161,6 @@ let
     '';
   };
 
-  installPnpm = pkgs.writeShellApplication {
-    name = "install-pnpm";
-    runtimeInputs = with pkgs; [ bash ];
-    text = ''
-      set -euo pipefail
-      if command -v pnpm &>/dev/null; then
-        echo "pnpm already installed: $(pnpm --version)"
-        exit 0
-      fi
-      NPM="$HOME/.bun/bin/npm"
-      if [ ! -x "$NPM" ]; then
-        echo "✗ npm not found — install bun first"
-        exit 1
-      fi
-      echo "Installing pnpm via npm..."
-      "$NPM" install -g pnpm
-      if command -v pnpm &>/dev/null; then
-        echo "✓ pnpm $(pnpm --version) installed"
-      else
-        echo "✗ pnpm installation failed"
-        exit 1
-      fi
-    '';
-  };
 
   setupCommands = pkgs.lib.concatStringsSep "\n" [
     "install-bun"
@@ -192,7 +168,6 @@ let
     "install-vp"
     "install-vp-globals"
     "install-uv"
-    "install-pnpm"
     "install-sdkman"
     "install-herdr"
     "install-herd-lite"
@@ -204,7 +179,6 @@ let
     installVp
     installVpGlobals
     installUv
-    installPnpm
     installSdkman
     installHerdr
     installHerdLite
@@ -216,7 +190,7 @@ in {
     inherit
       installBun installBunGlobals
       installVp installVpGlobals
-      installUv installPnpm installSdkman
+      installUv installSdkman
       installHerdr installHerdLite;
   };
 }
