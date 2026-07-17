@@ -64,8 +64,8 @@
             echo "── [1/2] Home Manager ──"
             cd "$REPO_DIR"
             # Remove existing config files that block Home Manager
-            for f in .bashrc .profile .bash_logout .gitconfig; do
-              [ -L "$HOME/$f" ] && rm "$HOME/$f"
+            for f in .bashrc .bash_profile .profile .bash_logout .gitconfig; do
+              [ -e "$HOME/$f" ] && rm -f "$HOME/$f"
             done
             home-manager switch --impure --flake .#default
             echo ""
