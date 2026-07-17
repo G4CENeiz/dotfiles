@@ -89,25 +89,33 @@ let
     text = ''
       set -euo pipefail
       SDKMAN_DIR="$HOME/.sdkman"
-      # Verify installation is complete
-      if [ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ] && [ -d "$SDKMAN_DIR/candidates" ]; then
-        echo "SDKMAN already installed and valid"
-        exit 0
+      SDK_INIT="$SDKMAN_DIR/bin/sdkman-init.sh"
+      CANDIDATES_DIR="$SDKMAN_DIR/candidates"
+
+      # Check if SDKMAN is installed with meaningful content
+      if [ -f "$SDK_INIT" ] && [ -d "$CANDIDATES_DIR" ]; then
+        # Check if any candidates are actually installed (not just the dir structure)
+        INSTALLED=$(find "$CANDIDATES_DIR" -mindepth 2 -maxdepth 2 -type d 2>/dev/null | head -1)
+        if [ -n "$INSTALLED" ]; then
+          echo "SDKMAN installed with packages — skipping"
+          exit 0
+        fi
+        echo "SDKMAN installed but empty — reinstalling..."
       fi
-      # Remove incomplete/broken installation
+
+      # Remove if exists
       if [ -d "$SDKMAN_DIR" ]; then
-        echo "SDKMAN found but incomplete — removing..."
         rm -rf "$SDKMAN_DIR"
       fi
+
       echo "Installing SDKMAN!..."
-      # Download SDKMAN archive directly (bypasses installer's bashrc modification)
       curl -s "https://api.sdkman.io/2/banners/archives/sdkman.zip" -o /tmp/sdkman.zip
       unzip -q /tmp/sdkman.zip -d "$HOME"
       rm -f /tmp/sdkman.zip
-      # Initialize SDKMAN directories
-      mkdir -p "$SDKMAN_DIR/candidates"
+      mkdir -p "$CANDIDATES_DIR"
       touch "$SDKMAN_DIR/var/candidates"
-      if [ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
+
+      if [ -f "$SDK_INIT" ]; then
         echo "✓ SDKMAN installed"
       else
         echo "✗ SDKMAN installation failed"
