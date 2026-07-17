@@ -68,7 +68,7 @@
 
             # ── Step 2: Non-nix tools ──
             echo "── [2/2] Non-nix tools ──"
-            ${nonNix.setupCommands}
+            home-manager switch --impure --flake .#default -b backup
             ${docker.installCommand}
             echo ""
 
