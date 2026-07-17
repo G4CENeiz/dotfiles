@@ -125,6 +125,12 @@ in
     '';
   };
 
+  # ── Profile (login shells) ──
+  home.profileExtra = ''
+    export LC_ALL=C.utf8
+    export LANG=C.utf8
+  '';
+
 
   # ── Git ──
   programs.git = {
