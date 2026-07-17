@@ -40,7 +40,7 @@ curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 # 2. Restart your shell (or run: source ~/.bashrc)
 
 # 3. Clone and run
-git clone https://github.com/gace/dotfiles ~/dotfiles
+git clone https://github.com/G4CENeiz/dotfiles ~/dotfiles
 cd ~/dotfiles
 nix run .
 ```
