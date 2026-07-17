@@ -125,11 +125,12 @@ in
     '';
   };
 
-  # ── Profile (login shells) ──
-  home.profileExtra = ''
+  # Fix locale warnings in bash (set before bashrc loads)
+  home.file.".profile".text = ''
     export LC_ALL=C.utf8
     export LANG=C.utf8
   '';
+
 
 
   # ── Git ──
