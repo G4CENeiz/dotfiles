@@ -7,8 +7,9 @@ let
 in
 {
   home.stateVersion = "24.11";
-  home.username = builtins.getEnv "USER";
-  home.homeDirectory = builtins.getEnv "HOME";
+  # Change these to your username/home when cloning
+  home.username = "gace";
+  home.homeDirectory = "/home/gace";
 
   # ── Nix packages (installed from nixpkgs) ──
   home.packages = with pkgs; [

@@ -31,10 +31,14 @@
     in
     {
       # ── Home Manager config (used by `home-manager switch`) ──
-      homeConfigurations."${builtins.getEnv "USER"}" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations.default = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [ ./home.nix ];
-        extraSpecialArgs = { dotfiles = ./.; };
+        extraSpecialArgs = {
+          dotfiles = ./.;
+          username = builtins.getEnv "USER";
+          homeDirectory = builtins.getEnv "HOME";
+        };
       };
 
       # ── ONE command: `nix run .` does everything ──
@@ -59,7 +63,7 @@
             # ── Step 1: Home Manager ──
             echo "── [1/2] Home Manager ──"
             cd "$REPO_DIR"
-            home-manager switch --flake ".#$(whoami)"
+            home-manager switch --flake .#default
             echo ""
 
             # ── Step 2: Non-nix tools ──
