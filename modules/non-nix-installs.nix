@@ -85,11 +85,11 @@ let
 
   installSdkman = pkgs.writeShellApplication {
     name = "install-sdkman";
-    runtimeInputs = with pkgs; [ curl bash ];
+    runtimeInputs = with pkgs; [ curl bash gnutar ];
     text = ''
       set -euo pipefail
       SDKMAN_DIR="$HOME/.sdkman"
-      # Verify installation is complete, not just directory exists
+      # Verify installation is complete
       if [ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ] && [ -d "$SDKMAN_DIR/candidates" ]; then
         echo "SDKMAN already installed and valid"
         exit 0
@@ -99,17 +99,14 @@ let
         echo "SDKMAN found but incomplete — removing..."
         rm -rf "$SDKMAN_DIR"
       fi
-      # SDKMAN installer fails if .bashrc is a read-only symlink
-      # Create a temporary writable .bashrc for the installer
-      if [ -L "$HOME/.bashrc" ]; then
-        TMP_BASHRC="$(mktemp)"
-        cp "$HOME/.bashrc" "$TMP_BASHRC" 2>/dev/null || echo "" > "$TMP_BASHRC"
-        rm "$HOME/.bashrc"
-        cp "$TMP_BASHRC" "$HOME/.bashrc"
-        rm "$TMP_BASHRC"
-      fi
       echo "Installing SDKMAN!..."
-      curl -s "https://get.sdkman.io" | bash -s -- -s
+      # Download SDKMAN archive directly (bypasses installer's bashrc modification)
+      curl -s "https://api.sdkman.io/2/banners/archives/sdkman.zip" -o /tmp/sdkman.zip
+      unzip -q /tmp/sdkman.zip -d "$HOME"
+      rm -f /tmp/sdkman.zip
+      # Initialize SDKMAN directories
+      mkdir -p "$SDKMAN_DIR/candidates"
+      touch "$SDKMAN_DIR/var/candidates"
       if [ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ]; then
         echo "✓ SDKMAN installed"
       else
