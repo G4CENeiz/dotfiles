@@ -163,7 +163,7 @@ let
 
   installPnpm = pkgs.writeShellApplication {
     name = "install-pnpm";
-    runtimeInputs = with pkgs; [ curl bash ];
+    runtimeInputs = with pkgs; [ curl bash gcc.cc.lib ];
     text = ''
       set -euo pipefail
       if command -v pnpm &>/dev/null; then
