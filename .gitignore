@@ -1,16 +1,35 @@
-# OS
+# OS / runtime
 .DS_Store
 Thumbs.db
 
-# Editor
+# Editors
 *.swp
 *.swo
 *~
-.vscode/
+# Distro-specific runtime state
+.config/ubuntu-insights/
+.vscode/settings.json
 
+# Herdr runtime
+config/.config/herdr/*.log
+config/.config/herdr/session.json
+config/.config/herdr/*.sock
+# Nushell history
+config/.config/nushell/history.*
+# Secrets
+*.pem
+*.key
+.env
+.env.*
 # Nix
 result
-result-*
 
-# Logs
-*.log
+# Runtime / cache (not configs)
+.bun/
+.cache/
+.local/
+.npm/
+.omp/
+.nix-profile/
+.vite-plus/
+.motd_shown

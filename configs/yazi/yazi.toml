@@ -1,8 +1,0 @@
-# Yazi File Manager Config
-[mgr]
-show_hidden = true
-ratio = [1, 4, 3]
-
-[preview]
-max_width = 600
-max_height = 900

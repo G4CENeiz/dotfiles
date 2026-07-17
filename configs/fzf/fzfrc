@@ -1,5 +1,0 @@
-# Fzf Config
---walker-skip '.git,node_modules,.direnv,vendor,dist'
---height 40%
---layout=reverse
---info=inline-right

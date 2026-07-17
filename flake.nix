@@ -1,86 +1,79 @@
 {
-  description = "gace's dotfiles";
+  description = "Gace's dotfiles";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs }:
+  outputs = { nixpkgs, home-manager, ... }@inputs:
     let
+      # Change this when switching machines:
+      #   x86_64-linux  — Intel/AMD Linux
+      #   aarch64-linux — ARM Linux
+      #   x86_64-darwin — Intel Mac
+      #   aarch64-darwin — Apple Silicon Mac
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+
+      # Import package lists (pure lists, no logic)
+      bunGlobals = import ./modules/packages/bun-globals.nix;
+      vpGlobals = import ./modules/packages/vp-globals.nix;
+
+      # Import modules
+      nonNix = import ./modules/non-nix-installs.nix { inherit pkgs bunGlobals vpGlobals; };
+      docker = import ./modules/tools/docker.nix { inherit pkgs; };
+
+      homeManagerPackages = home-manager.packages.${system};
     in
     {
-      packages.${system}.default = pkgs.buildEnv {
-        name = "gace-tools";
-        paths = [
-          # ── Shell ───────────────────────────────────────
-          pkgs.nushell
+      # ── Home Manager config (used by `home-manager switch`) ──
+      homeConfigurations."gace" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [ ./home.nix ];
+        extraSpecialArgs = { dotfiles = ./.; };
+      };
 
-          # ── Editor ──────────────────────────────────────
-          pkgs.neovim
+      # ── ONE command: `nix run .` does everything ──
+      packages.${system} = nonNix.packages // docker.packages // {
+        default = pkgs.writeShellApplication {
+          name = "dotfiles-setup";
+          runtimeInputs = with pkgs; [
+            homeManagerPackages.home-manager
+            git
+            bash
+          ] ++ nonNix.runtimeDeps
+            ++ docker.runtimeDeps;
+          text = ''
+            set -euo pipefail
+            REPO_DIR="$(pwd)"
 
-          # ── Terminal ────────────────────────────────────
-          pkgs.ghostty
+            echo "╔══════════════════════════════════╗"
+            echo "║   Gace's Dotfiles Setup          ║"
+            echo "╚══════════════════════════════════╝"
+            echo ""
 
-          # ── Git ─────────────────────────────────────────
-          pkgs.git
+            # ── Step 1: Home Manager ──
+            echo "── [1/2] Home Manager ──"
+            cd "$REPO_DIR"
+            home-manager switch --flake .#gace
+            echo ""
 
-          # ── CLI Tools ───────────────────────────────────
-          pkgs.eza           # better ls
-          pkgs.ripgrep       # better grep
-          pkgs.fd            # better find
-          pkgs.jq            # JSON processor
-          pkgs.yq            # YAML processor
-          pkgs.curl
-          pkgs.wget
-          pkgs.zip
-          pkgs.unzip
-          pkgs.gnutar
-          pkgs.delta     # better git diff
-          pkgs.direnv        # auto env loading
-          pkgs.carapace      # shell completions
-          pkgs.starship      # prompt
-          pkgs.zoxide        # smart cd
-          pkgs.bat           # better cat
-          pkgs.fzf           # fuzzy finder
-          pkgs.btop          # system monitor
-          pkgs.tree          # directory listing
+            # ── Step 2: Non-nix tools ──
+            echo "── [2/2] Non-nix tools ──"
+            ${nonNix.setupCommands}
+            ${docker.installCommand}
+            echo ""
 
-          # ── TUI Apps ────────────────────────────────────
-          pkgs.yazi          # file manager
-          pkgs.lazygit       # git TUI
-          pkgs.lazydocker    # docker TUI
-          pkgs.lazysql       # database TUI
-
-          # ── DevOps ──────────────────────────────────────
-          pkgs.kubectl
-          pkgs.kubernetes-helm
-          pkgs.k9s
-          pkgs.httpie
-          pkgs.hurl
-
-          # ── VCS ─────────────────────────────────────────
-          pkgs.jujutsu       # jj
-          pkgs.jjui          # jj TUI
-          pkgs.herdr         # terminal multiplexer
-
-          # ── Languages ───────────────────────────────────
-          pkgs.typst
-          pkgs.tinymist      # typst LSP
-          pkgs.typstyle      # typst formatter
-
-          # ── Media ───────────────────────────────────────
-          pkgs.ffmpeg
-          pkgs.imagemagick
-          pkgs.yt-dlp
-
-          # ── Other ───────────────────────────────────────
-          pkgs.mosh          # mobile shell
-          pkgs.gh            # GitHub CLI
-          pkgs.bun           # JS runtime
-          pkgs.pnpm          # package manager
-        ];
+            echo "╔══════════════════════════════════╗"
+            echo "║   Setup complete!                 ║"
+            echo "║   Restart your shell.             ║"
+            echo "╚══════════════════════════════════╝"
+          '';
+        };
       };
     };
 }
