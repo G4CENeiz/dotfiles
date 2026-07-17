@@ -20,3 +20,8 @@ $env.HISTORY_SIZE = 500_000
 if ("/home/gace/.nix-profile/bin" | path exists) {
     $env.PATH = ($env.PATH | prepend "/home/gace/.nix-profile/bin")
 }
+
+# pnpm
+$env.PNPM_HOME = "/home/gace/.local/share/pnpm"
+$env.PATH = ($env.PATH | split row (char esep) | prepend ($env.PNPM_HOME | path join "bin") )
+# pnpm end

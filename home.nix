@@ -21,6 +21,9 @@ in
     unzip
     gnutar
 
+    # Editor
+    neovim
+
     # Search & find
     ripgrep
     fd
@@ -202,6 +205,12 @@ in
     # Herdr
     "herdr" = {
       source = mkOutOfStoreSymlink "${dotfiles}/config/.config/herdr";
+      recursive = true;
+    };
+
+    # Neovim — symlink config, managed by lazy.nvim
+    "nvim" = {
+      source = mkOutOfStoreSymlink "${dotfiles}/config/.config/nvim";
       recursive = true;
     };
   };
