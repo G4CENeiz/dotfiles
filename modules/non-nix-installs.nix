@@ -93,7 +93,7 @@ let
         exit 0
       fi
       echo "Installing SDKMAN!..."
-      curl -s "https://get.sdkman.io" | bash
+      curl -s "https://get.sdkman.io" | bash -s -- -s
       if [ -f "$HOME/.sdkman/bin/sdkman-init.sh" ]; then
         echo "✓ SDKMAN installed"
       else
