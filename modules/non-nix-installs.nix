@@ -132,9 +132,13 @@ let
         echo "herd-lite already installed"
         exit 0
       fi
+      HERD_DIR="$HOME/.config/herd-lite/bin"
+      mkdir -p "$HERD_DIR"
+      # Pre-add to PATH so installer skips bashrc modification
+      export PATH="$HERD_DIR:$PATH"
       echo "Installing herd-lite..."
-      curl -fsSL https://php.new/install/linux | bash || true
-      if command -v herd &>/dev/null; then
+      curl -fsSL https://php.new/install/linux | bash
+      if [ -x "$HERD_DIR/herd" ]; then
         echo "✓ herd-lite installed"
       else
         echo "✗ herd-lite installation failed"
