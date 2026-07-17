@@ -5,6 +5,8 @@ $env.LC_ALL = "C.utf8"
 $env.LANG = "C.utf8"
 
 # --- Paths ---
+# Hostname (nushell doesn't have this built-in)
+$env.HOSTNAME = (run-external hostname)
 $env.BUN_INSTALL = ($env.HOME | path join ".bun")
 $env.PNPM_HOME = ($env.HOME | path join ".local/share/pnpm")
 $env.SDKMAN_DIR = ($env.HOME | path join ".sdkman")
