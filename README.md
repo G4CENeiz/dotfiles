@@ -41,15 +41,10 @@ curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 # 3. Clone and run
 git clone https://github.com/G4CENeiz/dotfiles ~/dotfiles
 cd ~/dotfiles
-
-# 4. Set your username in config.nix
-nano config.nix
-
-# 5. Apply
 nix run .
 ```
 
-**Important:** Edit `config.nix` with your username before running `nix run .`. This is the only file you need to change.
+That's it. One command sets up everything — no file editing required.
 
 ## Updating
 

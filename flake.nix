@@ -19,9 +19,6 @@
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
 
-      # Import user config (edit config.nix with your username)
-      userConfig = import ./config.nix;
-
       # Import package lists (pure lists, no logic)
       bunGlobals = import ./modules/packages/bun-globals.nix;
       vpGlobals = import ./modules/packages/vp-globals.nix;
@@ -39,8 +36,8 @@
         modules = [ ./home.nix ];
         extraSpecialArgs = {
           dotfiles = ./.;
-          username = userConfig.username;
-          homeDirectory = userConfig.homeDirectory;
+          username = builtins.getEnv "USER";
+          homeDirectory = builtins.getEnv "HOME";
         };
       };
 
@@ -66,7 +63,7 @@
             # ── Step 1: Home Manager ──
             echo "── [1/2] Home Manager ──"
             cd "$REPO_DIR"
-            home-manager switch --flake .#default
+            home-manager switch --impure --flake .#default
             echo ""
 
             # ── Step 2: Non-nix tools ──
