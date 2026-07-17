@@ -4,9 +4,19 @@
 $env.LC_ALL = "C.utf8"
 $env.LANG = "C.utf8"
 
-# --- Paths ---
+# --- Environment variables (set BEFORE PATH) ---
+$env.BUN_INSTALL = ($env.HOME | path join ".bun")
+$env.PNPM_HOME = ($env.HOME | path join ".local/share/pnpm")
 $env.SDKMAN_DIR = ($env.HOME | path join ".sdkman")
 
+# Hostname
+if ("/etc/hostname" | path exists) {
+    $env.HOSTNAME = (open /etc/hostname | str trim)
+} else {
+    $env.HOSTNAME = "unknown"
+}
+
+# --- Build PATH ---
 $env.PATH = (
     $env.PATH
     | split row (char esep)
@@ -19,11 +29,9 @@ $env.PATH = (
     | prepend ($env.BUN_INSTALL | path join "bin")
     | uniq
 )
-# Hostname
-$env.HOSTNAME = (open /etc/hostname | str trim)
 
-# --- Vite+ (https://viteplus.dev) ---
-if ($env.HOME | path join ".vite-plus/env.nu" | path exists) { source ~/.vite-plus/env.nu }
+# --- Vite+ (skip env.nu - it's incompatible with nushell PATH handling) ---
+# vp binary is already in PATH above
 
 # --- History ---
 $env.HISTORY_SIZE = 500_000
