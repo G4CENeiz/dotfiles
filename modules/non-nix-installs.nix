@@ -85,7 +85,7 @@ let
 
   installSdkman = pkgs.writeShellApplication {
     name = "install-sdkman";
-    runtimeInputs = with pkgs; [ curl bash gnutar ];
+    runtimeInputs = with pkgs; [ curl bash ];
     text = ''
       set -euo pipefail
       SDKMAN_DIR="$HOME/.sdkman"
@@ -94,7 +94,6 @@ let
 
       # Check if SDKMAN is installed with meaningful content
       if [ -f "$SDK_INIT" ] && [ -d "$CANDIDATES_DIR" ]; then
-        # Check if any candidates are actually installed (not just the dir structure)
         INSTALLED=$(find "$CANDIDATES_DIR" -mindepth 2 -maxdepth 2 -type d 2>/dev/null | head -1)
         if [ -n "$INSTALLED" ]; then
           echo "SDKMAN installed with packages — skipping"
@@ -104,16 +103,25 @@ let
       fi
 
       # Remove if exists
-      if [ -d "$SDKMAN_DIR" ]; then
-        rm -rf "$SDKMAN_DIR"
+      [ -d "$SDKMAN_DIR" ] && rm -rf "$SDKMAN_DIR"
+
+      # SDKMAN installer fails on read-only .bashrc symlink
+      # Temporarily replace with a copy, then restore
+      BASHRC_BAK=""
+      if [ -L "$HOME/.bashrc" ]; then
+        BASHRC_BAK="$(readlink -f "$HOME/.bashrc")"
+        rm "$HOME/.bashrc"
+        cp "$BASHRC_BAK" "$HOME/.bashrc" 2>/dev/null || echo "# .bashrc" > "$HOME/.bashrc"
       fi
 
       echo "Installing SDKMAN!..."
-      curl -s "https://api.sdkman.io/2/banners/archives/sdkman.zip" -o /tmp/sdkman.zip
-      unzip -q /tmp/sdkman.zip -d "$HOME"
-      rm -f /tmp/sdkman.zip
-      mkdir -p "$CANDIDATES_DIR"
-      touch "$SDKMAN_DIR/var/candidates"
+      curl -s "https://get.sdkman.io" | bash -s -- -s
+
+      # Restore symlink
+      if [ -n "$BASHRC_BAK" ]; then
+        rm -f "$HOME/.bashrc"
+        ln -s "$BASHRC_BAK" "$HOME/.bashrc"
+      fi
 
       if [ -f "$SDK_INIT" ]; then
         echo "✓ SDKMAN installed"
