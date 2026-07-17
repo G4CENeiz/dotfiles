@@ -83,7 +83,7 @@ let
 
   installUv = pkgs.writeShellApplication {
     name = "install-uv";
-    runtimeInputs = with pkgs; [ curl bash ];
+    runtimeInputs = with pkgs; [ curl bash gawk ];
     text = ''
       set -euo pipefail
       if command -v uv &>/dev/null; then
