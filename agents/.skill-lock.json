@@ -31,6 +31,16 @@
       "installedAt": "2026-07-16T18:36:11.536Z",
       "updatedAt": "2026-07-16T18:36:11.536Z"
     },
+    "teach": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mattpocock/skills.git",
+      "skillPath": "skills/productivity/teach/SKILL.md",
+      "skillFolderHash": "c18bf7fde441baf8f359765f958593100be5481c",
+      "pluginName": "mattpocock-skills",
+      "installedAt": "2026-07-22T23:44:00.000Z",
+      "updatedAt": "2026-07-22T23:44:00.000Z"
+    },
     "find-skills": {
       "source": "vercel-labs/skills",
       "sourceType": "github",
