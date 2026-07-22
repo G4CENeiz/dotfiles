@@ -11,7 +11,7 @@ carapace, starship, zoxide, direnv, ffmpeg, imagemagick, yt-dlp, yazi, httpie, h
 kubectl, kubernetes-helm, k9s, typst, tinymist
 
 **Non-nix tools** (installed via official scripts):
-bun, vite-plus, uv, pnpm, SDKMAN, herdr, herd-lite, docker
+bun, vite-plus, uv, pnpm, SDKMAN, herdr, herd-lite, docker, zen-browser
 
 **Config files** (symlinked to system paths):
 - `~/.config/nushell/config.nu` → `config/.config/nushell/config.nu`
@@ -28,41 +28,43 @@ bun, vite-plus, uv, pnpm, SDKMAN, herdr, herd-lite, docker
 - direnv
 
 **Not managed** (install manually):
-VS Code, Neovim, Ghostty, code editors
+VS Code, Neovim, code editors
 
 ## Quick Start
 
 ```bash
-# 1. Install Nix via Determinate Systems (one-time)
 curl -fsSL https://install.determinate.systems/nix | sh -s -- install
-
-# 2. Restart your shell (or run: source ~/.bashrc)
-
-# 3. Clone and run
-git clone https://github.com/G4CENeiz/dotfiles ~/dotfiles
-cd ~/dotfiles
-nix run .
 ```
 
-That's it. One command sets up everything — no file editing required.
+Restart your shell, then:
+
+```bash
+git clone https://github.com/G4CENeiz/dotfiles ~/.dotfiles
+cd ~/.dotfiles
+sudo -v && nix run .
+```
+
+That's it. `sudo -v` caches your password once so the setup script can run Docker and battery threshold commands without prompting mid-run.
 
 ## Updating
 
 ### Update all pinned inputs (nixpkgs, home-manager)
 ```bash
-cd ~/dotfiles
+cd ~/.dotfiles
 nix flake update
-nix run .
+sudo -v && nix run .
 ```
 
 ### Update just nixpkgs (not home-manager)
 ```bash
+cd ~/.dotfiles
 nix flake lock --update-input nixpkgs
-nix run .
+sudo -v && nix run .
 ```
 
 ### See what would change before updating
 ```bash
+cd ~/.dotfiles
 nix flake update --dry-run
 ```
 
@@ -76,17 +78,30 @@ pnpm update
 ## Reinstalling Individual Tools
 
 If something breaks, reinstall just that tool:
+
 ```bash
-nix run .#install-bun
+nix run .#install-bun-globals
 nix run .#install-docker
 nix run .#install-uv
-nix run .#install-pnpm
+nix run .#install-zen
+nix run .#setup-battery-sudoers
+nix run .#set-battery-threshold
+```
+
+## Battery Charge Limit
+
+Your battery charges to 80% by default. To change the limit, edit `threshold = 80` in `modules/tools/battery-threshold.nix` and re-run `nix run .`.
+
+To re-apply after reboot without a full setup:
+
+```bash
+set-battery-threshold
 ```
 
 ## Repository Structure
 
 ```
-~/dotfiles/
+~/.dotfiles/
 ├── flake.nix                    # Entry point
 ├── flake.lock                   # Pinned versions
 ├── home.nix                     # Home Manager config
@@ -118,7 +133,8 @@ nix run .#install-pnpm
     ├── shell/
     │   └── bash.nix
     └── tools/
-        └── docker.nix
+        ├── docker.nix
+        └── battery-threshold.nix
 ```
 
 ## Git Signing with SSH (Recommended)
@@ -156,14 +172,16 @@ If you prefer GPG over SSH:
 ### Generate a GPG key
 ```bash
 gpg --full-generate-key
-# Choose: (1) RSA, (4096 bits), (0) No expiration, your name and email
 ```
+
+Choose: (1) RSA, (4096 bits), (0) No expiration, your name and email.
 
 ### Get your key ID
 ```bash
 gpg --list-secret-keys --keyid-format=long
-# Look for sec: rsa4096/XXXXXXXXXXXXXXXX
 ```
+
+Look for `sec: rsa4096/XXXXXXXXXXXXXXXX`.
 
 ### Configure git
 ```bash
@@ -187,7 +205,10 @@ home.packages = with pkgs; [
 ];
 ```
 
-Then run `nix run .`
+Then run:
+```bash
+nix run .
+```
 
 ## Adding a New Non-Nix Tool
 
@@ -200,7 +221,7 @@ installMyTool = pkgs.writeShellApplication {
     set -euo pipefail
     if command -v my-tool &>/dev/null; then
       echo "my-tool already installed"
-      return 0 2>/dev/null || exit 0
+      exit 0
     fi
     curl -fsSL https://example.com/install.sh | bash
   '';
@@ -208,6 +229,11 @@ installMyTool = pkgs.writeShellApplication {
 ```
 
 Add it to `setupCommands` and `runtimeDeps`.
+
+Then run:
+```bash
+nix run .
+```
 
 ## Adding a New Bun Global
 
@@ -219,7 +245,10 @@ Edit `modules/packages/bun-globals.nix`:
 ]
 ```
 
-Then run `nix run .`
+Then run:
+```bash
+nix run .
+```
 
 ## Platform Support
 
@@ -234,3 +263,5 @@ Then run `nix run .`
 - Nushell history files are gitignored.
 - Herdr runtime files (logs, sockets) are gitignored.
 - Agents skills are synced via symlink from `agents/` to `~/.agents/`.
+- Zen Browser is installed via official tarball script, skipped on WSL.
+- Battery charge limit defaults to 80%, configurable in `modules/tools/battery-threshold.nix`.
