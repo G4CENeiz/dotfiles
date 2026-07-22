@@ -28,7 +28,7 @@ bun, vite-plus, uv, pnpm, SDKMAN, herdr, herd-lite, docker, zen-browser
 - direnv
 
 **Not managed** (install manually):
-VS Code, Neovim, code editors
+VS Code, code editors
 
 ## Quick Start
 
