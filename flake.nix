@@ -26,6 +26,7 @@
       # Import modules
       nonNix = import ./modules/non-nix-installs.nix { inherit pkgs bunGlobals vpGlobals; };
       docker = import ./modules/tools/docker.nix { inherit pkgs; };
+      battery = import ./modules/tools/battery-threshold.nix { inherit pkgs; };
 
       homeManagerPackages = home-manager.packages.${system};
     in
@@ -42,7 +43,7 @@
       };
 
       # ── ONE command: `nix run .` does everything ──
-      packages.${system} = nonNix.packages // docker.packages // {
+      packages.${system} = nonNix.packages // docker.packages // battery.packages // {
         default = pkgs.writeShellApplication {
           name = "dotfiles-setup";
           runtimeInputs = with pkgs; [
@@ -50,7 +51,8 @@
             git
             bash
           ] ++ nonNix.runtimeDeps
-            ++ docker.runtimeDeps;
+            ++ docker.runtimeDeps
+            ++ [ battery.setupSudoers ];
           text = ''
             set -euo pipefail
             REPO_DIR="$(pwd)"
@@ -61,7 +63,7 @@
             echo ""
 
             # ── Step 1: Home Manager ──
-            echo "── [1/2] Home Manager ──"
+            echo "── [1/3] Home Manager ──"
             cd "$REPO_DIR"
             # Remove existing config files that block Home Manager
             for f in .bashrc .bash_profile .profile .bash_logout .gitconfig; do
@@ -71,9 +73,15 @@
             echo ""
 
             # ── Step 2: Non-nix tools ──
-            echo "── [2/2] Non-nix tools ──"
+            echo "── [2/3] Non-nix tools ──"
             ${nonNix.setupCommands}
             ${docker.installCommand}
+            echo ""
+
+            # ── Step 3: Battery charge limit ──
+            echo "── [3/3] Battery charge limit ──"
+            setup-battery-sudoers || true
+            "$HOME/.local/bin/set-battery-threshold" || true
             echo ""
 
             echo "╔══════════════════════════════════╗"
