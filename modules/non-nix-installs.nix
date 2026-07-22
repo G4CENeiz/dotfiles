@@ -1,7 +1,6 @@
 { pkgs, bunGlobals, vpGlobals }:
 
 let
-
   installBunGlobals = pkgs.writeShellApplication {
     name = "install-bun-globals";
     runtimeInputs = [ pkgs.bash ];
@@ -174,7 +173,34 @@ let
     '';
   };
 
+  installZen = pkgs.writeShellApplication {
+    name = "install-zen";
+    runtimeInputs = with pkgs; [ curl bash ];
+    text = ''
+      set -euo pipefail
 
+      # Skip on WSL — no native GPU for Zen's rendering
+      if grep -qi microsoft /proc/version 2>/dev/null; then
+        echo "WSL detected — skipping zen-browser install"
+        exit 0
+      fi
+
+      ZEN_DIR="$HOME/.tarball-installations/zen"
+      if [ -x "$ZEN_DIR/zen" ]; then
+        echo "zen-browser already installed"
+        exit 0
+      fi
+
+      echo "Installing Zen Browser..."
+      curl -fsSL https://github.com/zen-browser/updates-server/raw/refs/heads/main/install.sh | bash
+      if [ -x "$ZEN_DIR/zen" ]; then
+        echo "✓ zen-browser installed"
+      else
+        echo "✗ zen-browser installation failed"
+        exit 1
+      fi
+    '';
+  };
   setupCommands = pkgs.lib.concatStringsSep "\n" [
     "install-vp"
     "install-vp-globals"
@@ -183,6 +209,7 @@ let
     "install-sdkman"
     "install-herdr"
     "install-herd-lite"
+    "install-zen"
   ];
 
   runtimeDeps = [
@@ -193,6 +220,7 @@ let
     installSdkman
     installHerdr
     installHerdLite
+    installZen
   ];
 
 in {
@@ -202,6 +230,7 @@ in {
       installBunGlobals
       installVp installVpGlobals
       installUv installSdkman
-      installHerdr installHerdLite;
+      installHerdr installHerdLite
+      installZen;
   };
 }

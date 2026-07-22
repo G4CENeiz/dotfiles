@@ -4,6 +4,9 @@
 
 let
   inherit (config.lib.file) mkOutOfStoreSymlink;
+
+  # Battery threshold module
+  battery = import ./modules/tools/battery-threshold.nix { inherit pkgs; };
 in
 {
   home.stateVersion = "24.11";
@@ -251,5 +254,11 @@ in
   home.file.".agents" = {
     source = mkOutOfStoreSymlink "${dotfiles}/agents";
     recursive = true;
+  };
+
+  # Battery threshold — stable path for sudoers
+  home.file.".local/bin/set-battery-threshold" = {
+    source = battery.script;
+    executable = true;
   };
 }
