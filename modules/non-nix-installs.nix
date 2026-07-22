@@ -201,6 +201,36 @@ let
       fi
     '';
   };
+
+  installDms = pkgs.writeShellApplication {
+    name = "install-dms";
+    runtimeInputs = with pkgs; [ curl bash gnugrep ];
+    text = ''
+      set -euo pipefail
+
+      # Skip on WSL
+      if grep -qi microsoft /proc/version 2>/dev/null; then
+        echo "WSL detected — skipping DankMaterialShell install"
+        exit 0
+      fi
+
+      # Check if already installed
+      if command -v dms &>/dev/null; then
+        echo "dms already installed: $(dms --version 2>/dev/null || echo 'unknown version')"
+        exit 0
+      fi
+
+      echo "Installing DankMaterialShell with niri + ghostty..."
+      sudo -v && curl -fsSL https://install.danklinux.com | sh -s -- -c niri -t ghostty -y
+
+      if command -v dms &>/dev/null; then
+        echo "✓ DankMaterialShell installed (niri, ghostty, quickshell)"
+      else
+        echo "✗ DankMaterialShell installation failed"
+        exit 1
+      fi
+    '';
+  };
   setupCommands = pkgs.lib.concatStringsSep "\n" [
     "install-vp"
     "install-vp-globals"
@@ -210,6 +240,7 @@ let
     "install-herdr"
     "install-herd-lite"
     "install-zen"
+    "install-dms"
   ];
 
   runtimeDeps = [
@@ -221,6 +252,7 @@ let
     installHerdr
     installHerdLite
     installZen
+    installDms
   ];
 
 in {
@@ -231,6 +263,6 @@ in {
       installVp installVpGlobals
       installUv installSdkman
       installHerdr installHerdLite
-      installZen;
+      installZen installDms;
   };
 }

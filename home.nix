@@ -247,6 +247,36 @@ in
       source = mkOutOfStoreSymlink "${dotfiles}/config/.config/nvim";
       recursive = true;
     };
+
+    # GitHub CLI
+    "gh" = {
+      source = mkOutOfStoreSymlink "${dotfiles}/config/.config/gh";
+      recursive = true;
+    };
+
+    # Lazygit
+    "lazygit" = {
+      source = mkOutOfStoreSymlink "${dotfiles}/config/.config/lazygit";
+      recursive = true;
+    };
+
+    # Niri window manager + DMS theme
+    "niri" = {
+      source = mkOutOfStoreSymlink "${dotfiles}/config/.config/niri";
+      recursive = true;
+    };
+
+    # DankMaterialShell browser CSS
+    "DankMaterialShell" = {
+      source = mkOutOfStoreSymlink "${dotfiles}/config/.config/DankMaterialShell";
+      recursive = true;
+    };
+
+    # Ghostty terminal (DankLinux theme)
+    "ghostty" = {
+      source = mkOutOfStoreSymlink "${dotfiles}/config/.config/ghostty";
+      recursive = true;
+    };
   };
 
   # Agents skills — sync from dotfiles

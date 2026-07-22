@@ -11,12 +11,17 @@ carapace, starship, zoxide, direnv, ffmpeg, imagemagick, yt-dlp, yazi, httpie, h
 kubectl, kubernetes-helm, k9s, typst, tinymist
 
 **Non-nix tools** (installed via official scripts):
-bun, vite-plus, uv, pnpm, SDKMAN, herdr, herd-lite, docker, zen-browser
+bun, vite-plus, uv, pnpm, SDKMAN, herdr, herd-lite, docker, zen-browser, DankMaterialShell
 
 **Config files** (symlinked to system paths):
 - `~/.config/nushell/config.nu` → `config/.config/nushell/config.nu`
 - `~/.config/nushell/env.nu` → `config/.config/nushell/env.nu`
 - `~/.config/herdr/` → `config/.config/herdr/`
+- `~/.config/gh/config.yml` → `config/.config/gh/config.yml`
+- `~/.config/lazygit/config.yml` → `config/.config/lazygit/config.yml`
+- `~/.config/niri/` → `config/.config/niri/` (window manager + DMS theme)
+- `~/.config/DankMaterialShell/` → `config/.config/DankMaterialShell/` (browser CSS)
+- `~/.config/ghostty/` → `config/.config/ghostty/` (DankLinux theme)
 - `~/.agents/` → `agents/`
 
 **Programs configured** (via Home Manager):
@@ -79,9 +84,9 @@ pnpm update
 
 If something breaks, reinstall just that tool:
 
-```bash
-nix run .#install-bun-globals
-nix run .#install-docker
+nix run .#install-zen
+nix run .#install-dms
+nix run .#setup-battery-sudoers
 nix run .#install-uv
 nix run .#install-zen
 nix run .#setup-battery-sudoers
@@ -116,8 +121,21 @@ set-battery-threshold
 │       ├── nushell/
 │       │   ├── config.nu
 │       │   └── env.nu
-│       └── herdr/
-│           └── config.toml
+│       ├── herdr/
+│       │   └── config.toml
+│       ├── gh/
+│       │   └── config.yml
+│       ├── lazygit/
+│       │   └── config.yml
+│       ├── niri/
+│       │   ├── config.kdl
+│       │   └── dms/
+│       ├── DankMaterialShell/
+│       │   ├── firefox.css
+│       │   └── zen.css
+│       └── ghostty/
+│           ├── config
+│           └── themes/
 ├── agents/
 │   ├── .skill-lock.json
 │   └── skills/
@@ -264,4 +282,5 @@ nix run .
 - Herdr runtime files (logs, sockets) are gitignored.
 - Agents skills are synced via symlink from `agents/` to `~/.agents/`.
 - Zen Browser is installed via official tarball script, skipped on WSL.
+- DankMaterialShell is installed via COPR on Fedora, includes niri, ghostty, and quickshell. Skipped on WSL.
 - Battery charge limit defaults to 80%, configurable in `modules/tools/battery-threshold.nix`.
